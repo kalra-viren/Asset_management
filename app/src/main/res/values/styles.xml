@@ -1,0 +1,27 @@
+<resources>
+    <!-- Base Theme -->
+    <style name="Theme.MyApp" parent="Theme.AppCompat.DayNight">
+        <!-- Keep your main theme settings here -->
+    </style>
+
+    <!-- New Splash Theme         <item name="android:windowBackground">@color/background</item>
+-->
+    <style name="Theme.MyApp.Splash" parent="Theme.AppCompat.DayNight">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+
+    <style name="Theme.AssetManagement" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:colorPrimary">@color/primary_gradient</item>
+        <item name="android:colorPrimaryDark">@color/primary_gradient_dark</item>
+        <item name="android:statusBarColor">@color/primary_gradient_dark</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+
+    <style name="AssetManagement.ActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="android:background">@drawable/app_bar_gradient</item>
+    </style>
+
+
+</resources>

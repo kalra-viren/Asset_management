@@ -1,0 +1,8 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <color android:color="#6699B0D4"/> <!-- Darker transparent blue when pressed -->
+    </item>
+    <item>
+        <color android:color="#99B0D4FF"/> <!-- Semi-transparent blue for normal state -->
+    </item>
+</selector>
