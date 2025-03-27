@@ -1,11 +1,14 @@
 package com.example.assetmanagement.AssignAsset;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -49,6 +52,8 @@ public class ActualAssignmentTask extends AppCompatActivity {
     private TextView tv_selected_own;
     private LinearLayout ownershipLinearLayout;
     private Button btnReassign;
+    private AutoCompleteTextView autoCompleteLocation;
+    private AutoCompleteTextView autoCompleteOwnership;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +61,8 @@ public class ActualAssignmentTask extends AppCompatActivity {
         setContentView(R.layout.activity_actual_assignment);
 
         context = this;
+        @SuppressLint("UseCompatLoadingForDrawables") Drawable d=getDrawable(R.drawable.card_gradient);
+        getSupportActionBar().setBackgroundDrawable(d);
         requestBuilder = new RequestBuilder(this);
         globalLocationMap = new HashMap<>();
         userMap = new HashMap<>();
@@ -63,14 +70,17 @@ public class ActualAssignmentTask extends AppCompatActivity {
         tvAssetCode = findViewById(R.id.tv_asset_code);
         tvSerialNumber = findViewById(R.id.tv_serial_number);
         tvAssetName = findViewById(R.id.tv_asset_name);
-        spinnerLocation = findViewById(R.id.spinner_location);
-        spOwnership = findViewById(R.id.et_ownership);
+//        spinnerLocation = findViewById(R.id.spinner_location);
+//        spOwnership = findViewById(R.id.et_ownership);
+        autoCompleteLocation = findViewById(R.id.autoCompleteLocation);
+        autoCompleteOwnership = findViewById(R.id.autoCompleteOwnership);
         btnSubmit = findViewById(R.id.btn_submit);
-        spinnerLinearLayout=findViewById(R.id.layout_spinner_section);
-        tv_selected_loc=findViewById(R.id.tv_selected_loc);
-        tv_selected_own=findViewById(R.id.tv_selected_ownership);
-        ownershipLinearLayout=findViewById(R.id.layout_ownership);
-        btnReassign=findViewById(R.id.btn_reassign);
+        spinnerLinearLayout = findViewById(R.id.layout_spinner_section);
+        tv_selected_loc = findViewById(R.id.tv_selected_loc);
+        tv_selected_own = findViewById(R.id.tv_selected_ownership);
+        ownershipLinearLayout = findViewById(R.id.layout_ownership);
+        btnReassign = findViewById(R.id.btn_reassign);
+        autoCompleteLocation = findViewById(R.id.autoCompleteLocation);
 
         // Get UID from previous screen
         scannedUID = getIntent().getStringExtra("SCANNED_UID");
@@ -89,7 +99,7 @@ public class ActualAssignmentTask extends AppCompatActivity {
 
         // Submit Button Click Listener
         btnSubmit.setOnClickListener(v -> showConfirmationDialog());
-        btnReassign.setOnClickListener(v->showConfirmationDialogForReassign());
+        btnReassign.setOnClickListener(v -> showConfirmationDialogForReassign());
     }
 
     // Fetch asset details from API
@@ -121,12 +131,12 @@ public class ActualAssignmentTask extends AppCompatActivity {
                                             .show();
                                     spinnerLinearLayout.setVisibility(View.VISIBLE);
                                     ownershipLinearLayout.setVisibility(View.VISIBLE);
-                                    tv_selected_loc.setText("Selected Location: "+location);
-                                    tv_selected_own.setText("Selected Ownership: "+username);
+                                    tv_selected_loc.setText("Selected Location: " + location);
+                                    tv_selected_own.setText("Selected Ownership: " + username);
                                     btnSubmit.setVisibility(View.GONE);
                                     btnReassign.setVisibility(View.VISIBLE);
                                 }
-                                tvAssetCode.setText("Asset Code: " + asset.getInt("Asset_Code"));
+                                tvAssetCode.setText("Asset Code: " + String.valueOf(asset.getLong("Asset_Code")));
                                 tvSerialNumber.setText("Serial Number: " + asset.getString("Serial_Number"));
                                 tvAssetName.setText("Asset Name: " + asset.getString("Asset_Name"));
                             }
@@ -152,11 +162,27 @@ public class ActualAssignmentTask extends AppCompatActivity {
     // Show Confirmation Dialog
     private void showConfirmationDialog() {
         // Get selected values from spinners
-        String selectedLocation = spinnerLocation.getSelectedItem().toString();
-        String selectedOwnership = spOwnership.getSelectedItem().toString();
+        String selectedLocation = autoCompleteLocation.getText().toString().trim();
+        String selectedOwnership = autoCompleteOwnership.getText().toString().trim();
 
         // Check if spinners are filled correctly
-        if (selectedLocation.equals("Select Location") || selectedOwnership.equals("Select Ownership")) {
+//        if (selectedLocation.equals("Select Location") || selectedOwnership.equals("Select Ownership")) {
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Incomplete Selection")
+//                    .setMessage("Please select both location and ownership before proceeding.")
+//                    .setPositiveButton("OK", null)
+//                    .show();
+//        } else {
+//            // Show confirmation dialog if selections are valid
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Confirm Assignment")
+//                    .setMessage("Are you sure you want to assign this asset?")
+//                    .setPositiveButton("Yes", (dialog, which) -> assignAsset())
+//                    .setNegativeButton("No", null)
+//                    .show();
+//        }
+        if (selectedLocation.isEmpty() || selectedOwnership.isEmpty() ||
+                selectedLocation.equals("Select Location") || selectedOwnership.equals("Select Ownership")) {
             new AlertDialog.Builder(this)
                     .setTitle("Incomplete Selection")
                     .setMessage("Please select both location and ownership before proceeding.")
@@ -173,13 +199,28 @@ public class ActualAssignmentTask extends AppCompatActivity {
         }
     }
 
-
-    private void showConfirmationDialogForReassign(){
-        String selectedLocation = spinnerLocation.getSelectedItem().toString();
-        String selectedOwnership = spOwnership.getSelectedItem().toString();
+    private void showConfirmationDialogForReassign() {
+        String selectedLocation = autoCompleteLocation.getText().toString().trim();
+        String selectedOwnership = autoCompleteOwnership.getText().toString().trim();
 
         // Check if spinners are filled correctly
-        if (selectedLocation.equals("Select Location") || selectedOwnership.equals("Select Ownership")) {
+//        if (selectedLocation.equals("Select Location") || selectedOwnership.equals("Select Ownership")) {
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Incomplete Selection")
+//                    .setMessage("Please select both location and ownership before proceeding.")
+//                    .setPositiveButton("OK", null)
+//                    .show();
+//        } else {
+//            // Show confirmation dialog if selections are valid
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Confirm Assignment")
+//                    .setMessage("Are you sure you want to assign this asset?")
+//                    .setPositiveButton("Yes", (dialog, which) -> reAssign())
+//                    .setNegativeButton("No", null)
+//                    .show();
+//        }
+        if (selectedLocation.isEmpty() || selectedOwnership.isEmpty() ||
+                selectedLocation.equals("Select Location") || selectedOwnership.equals("Select Ownership")) {
             new AlertDialog.Builder(this)
                     .setTitle("Incomplete Selection")
                     .setMessage("Please select both location and ownership before proceeding.")
@@ -203,10 +244,10 @@ public class ActualAssignmentTask extends AppCompatActivity {
 //            put loation and ownership from the apis
             requestBody.put("location", selectedLocation_body);
             requestBody.put("empId", userName_body);
-            UserCredentials userCredentials=UserCredentials.getInstance(this);
-            String s=userCredentials.getUserId();
+            UserCredentials userCredentials = UserCredentials.getInstance(this);
+            String s = userCredentials.getUserId();
             requestBody.put("userId", s); // Static user ID, change as needed
-            requestBody.put("type","Assign");
+            requestBody.put("type", "Assign");
 
             String endpoint = API_URLs.assign_update_details_url; // Replace with actual API URL
 
@@ -219,8 +260,8 @@ public class ActualAssignmentTask extends AppCompatActivity {
                                 .getJSONObject(0)
                                 .getString("message");
 
-                        if ("Success".equals(message)) {
-                            Toast.makeText(ActualAssignmentTask.this, "Asset Assigned Successfully", Toast.LENGTH_SHORT).show();
+                        if ("Assignment Successful".equals(message)) {
+                            Toast.makeText(ActualAssignmentTask.this, "Assignment Successful", Toast.LENGTH_SHORT).show();
                             openNextScreen();
                         } else {
                             Toast.makeText(ActualAssignmentTask.this, "Assignment Failed", Toast.LENGTH_SHORT).show();
@@ -242,17 +283,17 @@ public class ActualAssignmentTask extends AppCompatActivity {
         }
     }
 
-    private void reAssign(){
+    private void reAssign() {
         try {
             JSONObject requestBody = new JSONObject();
             requestBody.put("uid", scannedUID); //read the comment below.
 //            put loation and ownership from the apis
             requestBody.put("location", selectedLocation_body);
             requestBody.put("empId", userName_body);
-            UserCredentials userCredentials=UserCredentials.getInstance(this);
-            String s=userCredentials.getUserId();
+            UserCredentials userCredentials = UserCredentials.getInstance(this);
+            String s = userCredentials.getUserId();
             requestBody.put("userId", s); // Static user ID, change as needed
-            requestBody.put("type","Reassign");
+            requestBody.put("type", "Reassign");
 
             String endpoint = API_URLs.assign_update_details_url; // Replace with actual API URL
 
@@ -340,21 +381,27 @@ public class ActualAssignmentTask extends AppCompatActivity {
                         globalLocationMap = locationMap;
 
                         // Update Spinner with fetched location names
-                        updateSpinner(spinnerLocation, locationNames);
+                        updateSpinner(autoCompleteLocation, locationNames);
 
-                        spinnerLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                selectedLocation_body = parent.getItemAtPosition(position).toString();
-                                int locId = globalLocationMap.get(selectedLocation_body); // Get loc_id
-                                fetchUsersByLocation(locId); // Call function to get users
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
+                        autoCompleteLocation.setOnItemClickListener((parent, view, position, id) -> {
+                            selectedLocation_body = (String) parent.getItemAtPosition(position);
+                            if (globalLocationMap.containsKey(selectedLocation_body)) {
+                                int locId = globalLocationMap.get(selectedLocation_body);
+                                fetchUsersByLocation(locId); // Fetch users based on selected location
                             }
                         });
-
+//                        spinnerLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                            @Override
+//                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                                selectedLocation_body = parent.getItemAtPosition(position).toString();
+//                                int locId = globalLocationMap.get(selectedLocation_body); // Get loc_id
+//                                fetchUsersByLocation(locId); // Call function to get users
+//                            }
+//
+//                            @Override
+//                            public void onNothingSelected(AdapterView<?> parent) {
+//                            }
+//                        });
 
                     } else {
                         Toast.makeText(context, "Failed to fetch locations", Toast.LENGTH_SHORT).show();
@@ -394,19 +441,26 @@ public class ActualAssignmentTask extends AppCompatActivity {
                         }
 
                         // Populate the user spinner
-                        updateSpinner(spOwnership, userNames);
+                        updateSpinner(autoCompleteOwnership, userNames);
 
-                        spOwnership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                String name = parent.getItemAtPosition(position).toString();
+//                        spOwnership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                            @Override
+//                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                                String name = parent.getItemAtPosition(position).toString();
+//                                userName_body = userMap.get(name); // Get loc_id
+//                            }
+//
+//                            @Override
+//                            public void onNothingSelected(AdapterView<?> parent) {
+//                            }
+//                        });
+                        autoCompleteOwnership.setOnItemClickListener((parent, view, position, id) -> {
+                            String name = (String) parent.getItemAtPosition(position);
+                            if (userMap.containsKey(name)) {
                                 userName_body = userMap.get(name); // Get loc_id
                             }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-                            }
                         });
+
 
                     } else {
                         Toast.makeText(context, "No users found for this location", Toast.LENGTH_SHORT).show();
@@ -424,13 +478,21 @@ public class ActualAssignmentTask extends AppCompatActivity {
         });
     }
 
-    private void updateSpinner(Spinner spinner, List<String> dataList) {
+    private void updateSpinner(AutoCompleteTextView autoCompleteTextView, List<String> dataList) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, dataList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.setThreshold(1);
+        autoCompleteTextView.setOnClickListener(v -> autoCompleteTextView.showDropDown());
+
+// Show dropdown when it gains focus
+        autoCompleteTextView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                autoCompleteTextView.showDropDown();
+            }
+        });
+
     }
-
-
 
 }
 

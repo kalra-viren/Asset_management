@@ -3,22 +3,18 @@ package com.example.assetmanagement.Login;
 import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -26,7 +22,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.security.crypto.EncryptedSharedPreferences;
 
-import com.android.volley.BuildConfig;
 import com.android.volley.VolleyError;
 import com.example.assetmanagement.Dashboard.DashboardActivity;
 import com.example.assetmanagement.R;
@@ -38,14 +33,15 @@ import com.example.assetmanagement.Util.Config;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import androidx.security.crypto.MasterKeys;
+
 import androidx.security.crypto.MasterKey;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;  // If you're using older versions
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.zebra.sdk.printer.ZebraPrinter;
+
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -60,8 +56,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 //        getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
-        context = this;
-        assert context != null;
+        context = getApplicationContext();
+        @SuppressLint("UseCompatLoadingForDrawables") Drawable d=getDrawable(R.drawable.card_gradient);
+        getSupportActionBar().setBackgroundDrawable(d);
         setContentView(R.layout.try_for_login);
 
         etUsername = findViewById(R.id.etUsername);
@@ -83,21 +80,28 @@ public class LoginActivity extends AppCompatActivity {
 ////        });
 
         try {
-            // Use MasterKey instead of MasterKeys.getOrCreate()
-            MasterKey masterKey = new MasterKey.Builder(context)
+            MasterKey masterKey = new MasterKey.Builder(this)
                     .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                     .build();
 
             encryptedSharedPreferences = EncryptedSharedPreferences.create(
-                    context,  // Change file name if needed
-                    "login_prefs",      // Secure master key
+                    this,  // Use "this" instead of context
+                    "login_prefs",
                     masterKey,
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
         } catch (GeneralSecurityException | IOException e) {
-            Log.e(TAG, "onCreateView: " + e.getMessage());  // Remove BuildConfig.DEBUG if not needed
+            Log.e(TAG, "Error initializing EncryptedSharedPreferences: " + e.getMessage());
+            Toast.makeText(this, "Secure storage failed", Toast.LENGTH_SHORT).show();
+            encryptedSharedPreferences = null;  // Explicitly set to null in case of error
         }
+
+// Check if initialization was successful
+        if (encryptedSharedPreferences == null) {
+            Toast.makeText(this, "Failed to initialize secure storage", Toast.LENGTH_SHORT).show();
+        }
+
 
         prefillCredentials(findViewById(android.R.id.content));
 
@@ -129,18 +133,22 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Call validation function (replace with actual API call if needed)
 
-                if (Config.isDebugMode) {
+                    if (Config.isDebugMode) {
                     UserCredentials userCredentials = UserCredentials.getInstance(context);
                     userCredentials.saveCredentials(username, password);
 
-                    if (rememberMeCheckBox.isChecked()) {
-                        encryptedSharedPreferences.edit()
-                                .putString("user_id", username)
-                                .putString("password", password)
-                                .apply();
-                    } else {
-                        encryptedSharedPreferences.edit().clear().apply();
-                    }
+                        if (encryptedSharedPreferences != null) {
+                            if (rememberMeCheckBox.isChecked()) {
+                                encryptedSharedPreferences.edit()
+                                        .putString("user_id", username)
+                                        .putString("password", password)
+                                        .apply();
+                            } else {
+                                encryptedSharedPreferences.edit().clear().apply();
+                            }
+                        } else {
+                            Log.e(TAG, "EncryptedSharedPreferences is null, cannot save credentials");
+                        }
                     Intent intent=new Intent(LoginActivity.this,DashboardActivity.class);
                     startActivity(intent);
                 } else {
@@ -154,6 +162,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void prefillCredentials(View view) {
+        if (encryptedSharedPreferences == null) {
+            Log.e(TAG, "SharedPreferences is null, skipping prefill.");
+            return;
+        }
         String savedUserId = encryptedSharedPreferences.getString("user_id", null);
         String savedPassword = encryptedSharedPreferences.getString("password", null);
 
@@ -278,4 +290,3 @@ public class LoginActivity extends AppCompatActivity {
 //        }
 //    }
 }
-

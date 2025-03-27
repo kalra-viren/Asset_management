@@ -85,6 +85,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Asset Name:"
+                        android:paddingBottom="6dp"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tv_added_at"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Asset Added At:"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -159,5 +168,54 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/buttonReject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="REJECT"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/rejectColor"
+                android:padding="10dp"
+                android:layout_margin="8dp"
+                android:elevation="4dp"/>
+
+            <Button
+                android:id="@+id/buttonApprove"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="APPROVE"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/approveColor"
+                android:padding="10dp"
+                android:layout_margin="8dp"
+                android:elevation="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/etRemark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter the remark"
+                android:textSize="16sp"
+                android:padding="10dp"
+                android:background="@android:drawable/editbox_background"
+                android:inputType="text" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>
