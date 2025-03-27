@@ -3,22 +3,18 @@ package com.example.assetmanagement.Login;
 import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -26,7 +22,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.security.crypto.EncryptedSharedPreferences;
 
-import com.android.volley.BuildConfig;
 import com.android.volley.VolleyError;
 import com.example.assetmanagement.Dashboard.DashboardActivity;
 import com.example.assetmanagement.R;
@@ -38,14 +33,15 @@ import com.example.assetmanagement.Util.Config;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import androidx.security.crypto.MasterKeys;
+
 import androidx.security.crypto.MasterKey;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKeys;  // If you're using older versions
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.zebra.sdk.printer.ZebraPrinter;
+
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -62,6 +58,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         context = this;
         assert context != null;
+        @SuppressLint("UseCompatLoadingForDrawables") Drawable d=getDrawable(R.drawable.card_gradient);
+        getSupportActionBar().setBackgroundDrawable(d);
         setContentView(R.layout.try_for_login);
 
         etUsername = findViewById(R.id.etUsername);
@@ -129,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Call validation function (replace with actual API call if needed)
 
-                if (Config.isDebugMode) {
+                    if (Config.isDebugMode) {
                     UserCredentials userCredentials = UserCredentials.getInstance(context);
                     userCredentials.saveCredentials(username, password);
 
@@ -278,4 +276,3 @@ public class LoginActivity extends AppCompatActivity {
 //        }
 //    }
 }
-

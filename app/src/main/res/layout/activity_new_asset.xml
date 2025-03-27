@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/lighter_gradient_bg"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
@@ -32,7 +33,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:paddingBottom="8dp"
-            android:text="Select Asset Type"
+            android:text="Fill the below details"
             android:textColor="#333333"
             android:textSize="18sp" />
 
@@ -46,15 +47,20 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/spinnerAssetType"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_weight="1"
-                android:background="@drawable/spinner_stylish"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:spinnerMode="dropdown" />
+                android:hint="Select Asset Type">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteAssetType"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/spinner_stylish"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
 
             <ProgressBar
@@ -65,38 +71,109 @@
                 android:visibility="gone" />
         </LinearLayout>
 
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Enter Serial Number"-->
+<!--            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"-->
+<!--            app:boxStrokeColor="#8BC34A"-->
+<!--            app:boxCornerRadiusTopStart="12dp"-->
+<!--            app:boxCornerRadiusTopEnd="12dp"-->
+<!--            app:boxCornerRadiusBottomStart="12dp"-->
+<!--            app:boxCornerRadiusBottomEnd="12dp">-->
 
-        <EditText
-            android:id="@+id/etSerialNumber"
+<!--            <EditText-->
+<!--                android:id="@+id/etSerialNumber"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textSize="16sp" -->
+<!--                android:textColor="#333333"-->
+<!--                -->
+<!--                android:paddingStart="16dp"-->
+<!--                android:paddingEnd="16dp"/>-->
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:hint="Enter Serial Number"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/edittext_background"
-            android:hint="Enter Serial Number"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="#333333"
-            android:textColorHint="#777777"
-            android:textSize="16sp" />
+            app:boxStrokeColor="#6200EE"
+            app:boxBackgroundMode="outline">
 
-        <EditText
-            android:id="@+id/etAssetCode"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSerialNumber"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:textColor="#333333"
+                android:textColorHint="#777777"
+                android:background="@drawable/spinner_stylish"
+                android:textSize="16sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/edittext_background"
             android:hint="Enter Asset Code"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="#333333"
-            android:textColorHint="#777777"
-            android:textSize="16sp" />
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="#777777"
+            app:boxStrokeWidthFocused="2dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAssetCode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:paddingStart="16dp"
+                android:background="@drawable/spinner_stylish"
+                android:paddingEnd="16dp"
+                android:textColor="#333333"
+                android:textColorHint="#777777"
+                android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="24dp"
+            android:hint="Description"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="#777777"
+            app:boxStrokeWidthFocused="2dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDescp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#333333"
+                android:background="@drawable/spinner_stylish"
+
+                android:textColorHint="#777777"
+                android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <Button
             android:id="@+id/btnPrintQRCode"

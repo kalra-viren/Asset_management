@@ -21,6 +21,9 @@
     <color name="background">#F5E6AB</color>  <!-- Use the cream shade or any color you prefer -->
     <color name="neon_green">#32CD32</color>
     <color name="transparent_black">#80000000</color>
+    <color name="approveColor">#4CAF50</color>  <!-- Soft Green for Approve -->
+    <color name="rejectColor">#F44336</color>  <!-- Subtle Red for Reject -->
+    <color name="buttonTextColor">#FFFFFF</color>  <!-- White Text for Buttons -->
 
 
 

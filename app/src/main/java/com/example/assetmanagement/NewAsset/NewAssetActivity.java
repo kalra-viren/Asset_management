@@ -1,10 +1,13 @@
 package com.example.assetmanagement.NewAsset;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -21,6 +24,7 @@ import com.example.assetmanagement.R;
 import com.example.assetmanagement.Remote.RequestBuilder;
 import com.example.assetmanagement.Remote.model.API_Interface;
 import com.example.assetmanagement.Util.API_URLs;
+import com.example.assetmanagement.Util.Config;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,28 +35,34 @@ import java.util.List;
 public class NewAssetActivity extends AppCompatActivity {
 
     private Spinner spinnerAssetType;
-    private EditText etSerialNumber, etAssetCode;
+    private AutoCompleteTextView autoCompleteAssetType;
+
+    private EditText etSerialNumber, etAssetCode,etDescription;
     private Button btnPrintQRCode;
     private RequestBuilder requestBuilder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_asset);
+        @SuppressLint("UseCompatLoadingForDrawables") Drawable d=getDrawable(R.drawable.card_gradient);
+        getSupportActionBar().setBackgroundDrawable(d);
         requestBuilder = new RequestBuilder(this);
 
         // Initialize Views
-        spinnerAssetType = findViewById(R.id.spinnerAssetType);
+        autoCompleteAssetType = findViewById(R.id.autoCompleteAssetType);
         etSerialNumber = findViewById(R.id.etSerialNumber);
         etAssetCode = findViewById(R.id.etAssetCode);
         btnPrintQRCode = findViewById(R.id.btnPrintQRCode);
-
+        etDescription=findViewById(R.id.etDescp);
         // Populate Spinner with asset types
-        boolean isDebugMode = false;
-        if (isDebugMode) {
+
+        if (Config.isDebugMode) {
             String[] assetTypes = {"Laptop", "Desktop", "Printer", "Scanner", "Projector"};
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, assetTypes);
-            spinnerAssetType.setAdapter(adapter);
+            autoCompleteAssetType.setAdapter(adapter);
+            autoCompleteAssetType.setThreshold(1);
         } else {
             fetchAssetTypes();
         }
@@ -71,9 +81,10 @@ public class NewAssetActivity extends AppCompatActivity {
     private boolean validateFields() {
         String serialNumber = etSerialNumber.getText().toString().trim();
         String assetCode = etAssetCode.getText().toString().trim();
-        String assetType = spinnerAssetType.getSelectedItem() != null ? spinnerAssetType.getSelectedItem().toString() : "";
+        String description=etDescription.getText().toString().trim();
+        String assetType = autoCompleteAssetType.getText().toString().trim() != null ? autoCompleteAssetType.getText().toString().trim() : "";
 
-        if (serialNumber.isEmpty() || assetCode.isEmpty() || assetType.isEmpty()) {
+        if (serialNumber.isEmpty() || assetCode.isEmpty() || assetType.isEmpty() || description.isEmpty()) {
             showAlertDialog("Incomplete Fields", "Please fill in all the fields before proceeding.");
             return false;
         }
@@ -110,7 +121,17 @@ public class NewAssetActivity extends AppCompatActivity {
                         // Populate Spinner
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(NewAssetActivity.this,
                                 android.R.layout.simple_spinner_dropdown_item, assetTypes);
-                        spinnerAssetType.setAdapter(adapter);
+                        autoCompleteAssetType.setAdapter(adapter);
+                        autoCompleteAssetType.setThreshold(1);
+
+                        autoCompleteAssetType.setOnClickListener(v -> autoCompleteAssetType.showDropDown());
+
+// Show dropdown when it gains focus
+                        autoCompleteAssetType.setOnFocusChangeListener((v, hasFocus) -> {
+                            if (hasFocus) {
+                                autoCompleteAssetType.showDropDown();
+                            }
+                        });
                     } else {
                         Toast.makeText(NewAssetActivity.this, "Failed to fetch asset types", Toast.LENGTH_SHORT).show();
                     }
@@ -145,9 +166,10 @@ public class NewAssetActivity extends AppCompatActivity {
 
     private void openQRCodeScreen() {
         // Get values from input fields
-        String assetType = spinnerAssetType.getSelectedItem().toString();
+        String assetType = autoCompleteAssetType.getText().toString().trim();
         String serialNumber = etSerialNumber.getText().toString();
         String assetCode = etAssetCode.getText().toString();
+        String descp=etDescription.getText().toString();
 
 
         // Open the QR Code Activity with data
@@ -155,6 +177,7 @@ public class NewAssetActivity extends AppCompatActivity {
         intent.putExtra("ASSET_TYPE", assetType);
         intent.putExtra("SERIAL_NUMBER", serialNumber);
         intent.putExtra("ASSET_CODE", assetCode);
+        intent.putExtra("DESCRIPTION",descp);
         startActivity(intent);
     }
 

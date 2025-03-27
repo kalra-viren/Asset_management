@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/rounded_gradient_bg"
+            android:background="@drawable/rounded_gradient_bg_2"
             android:elevation="6dp"
             android:orientation="vertical"
             android:padding="16dp"
@@ -137,13 +137,27 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/spinner_location"
+<!--            <Spinner-->
+<!--                android:id="@+id/spinner_location"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/spinner_stylish"-->
+<!--                android:elevation="4dp"-->
+<!--                android:padding="10dp" />-->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/spinner_stylish"
-                android:elevation="4dp"
-                android:padding="10dp" />
+                android:layout_height="48dp"
+                android:hint="Select Location">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/spinner_stylish"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <!-- Ownership Input -->
             <TextView
@@ -156,15 +170,28 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/et_ownership"
+<!--            <Spinner-->
+<!--                android:id="@+id/et_ownership"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginBottom="20dp"-->
+<!--                android:background="@drawable/spinner_stylish"-->
+<!--                android:elevation="4dp"-->
+<!--                android:padding="12dp"-->
+<!--                android:textSize="18sp" />-->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/spinner_stylish"
-                android:elevation="4dp"
-                android:padding="12dp"
-                android:textSize="18sp" />
+                android:layout_height="48dp"
+                android:hint="Select Ownership">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoCompleteOwnership"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/spinner_stylish"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
 

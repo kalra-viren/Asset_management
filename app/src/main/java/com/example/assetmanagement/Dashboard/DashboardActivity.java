@@ -1,14 +1,13 @@
 package com.example.assetmanagement.Dashboard;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
+
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.TextPaint;
+
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -33,8 +32,8 @@ public class DashboardActivity extends AppCompatActivity {
 //        android:background="#BFCF8D" cream color
 
         CardView cardAudit2 = findViewById(R.id.card_audit2);
-
-
+        @SuppressLint("UseCompatLoadingForDrawables") Drawable d=getDrawable(R.drawable.card_gradient);
+        getSupportActionBar().setBackgroundDrawable(d);
 
         // Set click listeners for each CardView
         LinearLayout llNewAsset = findViewById(R.id.ll_new_asset);
