@@ -136,7 +136,7 @@ public class ActualAssignmentTask extends AppCompatActivity {
                                     btnSubmit.setVisibility(View.GONE);
                                     btnReassign.setVisibility(View.VISIBLE);
                                 }
-                                tvAssetCode.setText("Asset Code: " + String.valueOf(asset.getLong("Asset_Code")));
+                                tvAssetCode.setText("Asset Code: " + asset.getString("Asset_Code"));
                                 tvSerialNumber.setText("Serial Number: " + asset.getString("Serial_Number"));
                                 tvAssetName.setText("Asset Name: " + asset.getString("Asset_Name"));
                             }

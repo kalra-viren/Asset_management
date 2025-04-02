@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.android.volley.VolleyError;
+import com.example.assetmanagement.Dashboard.DashboardActivity;
 import com.example.assetmanagement.Login.UserCredentials;
 import com.example.assetmanagement.R;
 import com.example.assetmanagement.Remote.RequestBuilder;
@@ -57,6 +58,7 @@ import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.printer.PrinterLanguage;
 import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.PrinterLanguage;
+import com.zebra.sdk.graphics.internal.ZebraImageAndroid;
 
 
 
@@ -74,6 +76,7 @@ public class QRCodeActivity extends AppCompatActivity {
     private ZebraPrinter zebraPrinter;
     private String PRINTER_MAC_ADDRESS = "60:95:32:2F:70:7A"; // Replace with your printer's MAC address
     private Button btnPrint;
+    private Bitmap qrBitmapGlobal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +121,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
             // Handle Print QR Code Button Click
 //            new code
-            connectToPrinter();
-            btnPrintQr.setOnClickListener(v -> connectToPrinter());
+//            connectToPrinter();
 //            old code
 //            btnPrintQr.setOnClickListener(v -> {
 //
@@ -138,6 +140,8 @@ public class QRCodeActivity extends AppCompatActivity {
             else{
                 sendAPIRequest(assetCode,serialNumber,assetType,descp);
             }
+            btnPrintQr.setOnClickListener(v -> connectToPrinter());
+
 
         }
     }
@@ -173,7 +177,7 @@ public class QRCodeActivity extends AppCompatActivity {
             paint.setTextAlign(Paint.Align.CENTER);
             canvas.drawText("" + serialNumber, qrBitmap.getWidth() / 2, qrBitmap.getHeight() + 40, paint);
 
-            return combinedBitmap;
+            return qrBitmap;
         } catch (WriterException e) {
             e.printStackTrace();
             Log.e("QR_GENERATION", "Error generating QR code: " + e.getMessage());
@@ -220,8 +224,8 @@ public class QRCodeActivity extends AppCompatActivity {
                             } else {
                                 // If a valid UID is returned, generate and display the QR code
                                 String uid = qrObject.getString("UID");
-                                Bitmap qrBitmap = generateQRCodeWithText(uid, serialNumber);
-                                ivQrCode.setImageBitmap(qrBitmap);
+                                qrBitmapGlobal = generateQRCodeWithText(uid, serialNumber);
+                                ivQrCode.setImageBitmap(qrBitmapGlobal);
 //                                sendBitmapToPrinter(zebraPrinter, qrBitmap);
                                 Toast.makeText(QRCodeActivity.this, "QR Code Generated!", Toast.LENGTH_SHORT).show();
                             }
@@ -308,8 +312,8 @@ public class QRCodeActivity extends AppCompatActivity {
                             } else if (qrObject.has("UID")) {
                                 // If UID is present, generate and display QR code
                                 String uid = qrObject.getString("UID");
-                                Bitmap qrBitmap = generateQRCodeWithText(uid,SerialNumber);
-                                ivQrCode.setImageBitmap(qrBitmap);
+                                qrBitmapGlobal = generateQRCodeWithText(uid,SerialNumber);
+                                ivQrCode.setImageBitmap(qrBitmapGlobal);
                                 Toast.makeText(QRCodeActivity.this, "QR Code Regenerated!", Toast.LENGTH_SHORT).show();
 
                                 // Show alert with "Reprint" and "OK" options
@@ -363,15 +367,21 @@ public class QRCodeActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                             Log.e("Printer", "Error connecting to printer: " + e.getMessage());
+                            return;
                         }
 
 
 //                        Log.d(TAG, "Connected to printer: " + pl.name());
-                        Toast.makeText(this, "Connected to Zebra Printer!", Toast.LENGTH_SHORT).show();
-                        Bitmap qrBitmap = generateQRCodeWithText("123456789", "SN12345");
-                        sendBitmapToPrinter(zebraPrinter, qrBitmap);
-                        printSampleLabel();
-                        printerConnection.close();
+                        Toast.makeText(this, "Connected to Zebra Printer!", Toast.LENGTH_LONG).show();
+//                        Bitmap qrBitmap = generateQRCodeWithText("123456789", "SN12345");
+
+                        sendBitmapToPrinter(printerConnection,zebraPrinter, qrBitmapGlobal);
+//                        printSampleLabel();
+//                        printerConnection.close();
+                        Log.d("QRCodeActivity", "Print QR Code button clicked.");
+                        Toast.makeText(this, "Print command executed", Toast.LENGTH_SHORT).show();
+                        Intent intent1 = new Intent(QRCodeActivity.this, DashboardActivity.class);
+                        startActivity(intent1);
 
                     } catch (Exception e) {
                         Log.e(TAG, "Could not connect to printer", e);
@@ -411,7 +421,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
         try {
             String zplCommand = "^XA\n" +
-                    "^FO50,50^A0N,50,50^FDHello Viren!^FS\n" +
+                    "^FO50,50^A0N,50,50^FDHello Shubham Sir!^FS\n" +
                     "^FO50,150^B3N,N,100,Y,N^FD1234567890^FS\n" +
                     "^XZ";
             printerConnection.write(zplCommand.getBytes());

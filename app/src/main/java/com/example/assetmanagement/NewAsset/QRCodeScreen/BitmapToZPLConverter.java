@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.zebra.sdk.comm.ConnectionException;
+import com.zebra.sdk.graphics.internal.ZebraImageAndroid;
 import com.zebra.sdk.printer.ZebraPrinter;
 import com.zebra.sdk.printer.ZebraPrinterFactory;
 import java.io.IOException;
+import com.zebra.sdk.comm.Connection;
+
 
 public class BitmapToZPLConverter {
 
@@ -34,13 +37,18 @@ public class BitmapToZPLConverter {
         }
         zplData.append("^XZ");
         return zplData.toString();
+
     }
 
-    public static void sendBitmapToPrinter(ZebraPrinter printer, Bitmap bitmap) {
+    public static void sendBitmapToPrinter(Connection printerConnection, ZebraPrinter printer, Bitmap bitmap) {
         if (printer == null) return;
         try {
-            String zplCommand = convertBitmapToZPL(bitmap);
-            printer.sendCommand(zplCommand);
+//            String zplCommand = convertBitmapToZPL(bitmap);
+////            printer.sendCommand(zplCommand);
+//            printerConnection.write(zplCommand.getBytes());
+            ZebraImageAndroid zebraImage = new ZebraImageAndroid(bitmap);
+
+            printer.printImage(zebraImage, 0, 0, bitmap.getWidth(), bitmap.getHeight(), false);
         } catch (ConnectionException e) {
             throw new RuntimeException(e);
         }
